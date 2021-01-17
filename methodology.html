@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Generic - Phantom by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+							<!-- Logo -->
+								<a href="index.html" class="logo">
+									<span class="symbol"><img src="images/logo.svg" alt="" /></span><span class="title">Home</span>
+								</a>
+
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<h2>Menu</h2>
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="generic.html">Ipsum veroeros</a></li>
+							<li><a href="generic.html">Tempus etiam</a></li>
+							<li><a href="generic.html">Consequat dolor</a></li>
+							<li><a href="elements.html">Elements</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<h1>METHODOLOGY</h1>
+							<h2>1. Start with enumeration</h2>
+							<i>DNS Enumeration</i><br>
+							
+							Who has port 53/TCP open?:<br>
+							<code>nmap -sS -Pn -p53 192.168.0/24 -oG DNS.txt</code><br><br>
+							
+							Grep out IPs that have 53/tcp open<br>
+							<code>cat DNS.txt | grep open </code><br><br>
+							<i>Sample output</i>
+							<pre>
+							  <code>
+Host: 192.168.101.30 ()		Ports: 53/open/tcp//domain///
+Host: 192.168.101.167 ()	Ports: 53/open/tcp//domain///
+Host: 192.168.101.237 ()	Ports: 53/open/tcp//domain///
+							  </code>
+							</pre>
+							After DNS servers have been identified and you only know a subnet, use this bash one-liner to lookup hostnames:<br>
+							<code>for i in {1..254}; do nslookup 192.168.101.$i 192.168.101.237; done > hostnames.txt</code><br><br>
+							
+							Then grep out discovered hostnames for file:<br>
+							<code>cat hostnames.txt | grep name</code><br><br>
+							<i>Sample output</i><br>
+							<pre>
+							  <code>
+5.101.168.192.in-addr.arpa	name = latte.coffee.local.
+7.101.168.192.in-addr.arpa	name = cappuccino.coffee.local.
+8.101.168.192.in-addr.arpa	name = strong.coffee.local.
+10.101.168.192.in-addr.arpa	name = frenchroast.coffee.local.
+14.101.168.192.in-addr.arpa	name = sugar.coffee.local.
+							  </code>
+							</pre>
+							
+							
+							Run nslookup against nameservers found: <i>IPs from above</i><br> 
+							<code>nslookup 'ip to lookup' 'nameserver to use' </code><br>
+							<code>nslookup 192.168.101.107 192.68.101.30</code><br><br>
+							<i>Sample output - can't resolve host</i><br>
+							<code>** server can't find 107.101.168.192.in-addr.arpa: SERVFAIL</code><br>
+							<i>Sample output - resolved hostname</i><br>
+							<code>107.101.168.192.in-addr.arpa	name = morning.coffee.local</code><br><br>
+							
+							Check to see if <b>morning.coffee.net</b> has an MX record
+							<code>nslookup -t mx morning.coffee.local 192.168.101.237</code><br>
+							You can change out the <i>mx</i> to different record types<br>
+							<i>Sample output</i><br>
+							<pre>
+							  <code>
+Using domain server:
+Name: 192.168.101.237
+Address: 192.168.101.237#53
+Aliases:
+morning.coffee.local has no MX record
+							  </code>
+							</pre>
+							DNS Zone transfer:
+							<pre>
+							  <code>
+host -l "domain"     "nameserver"
+host -l coffee.local 192.168.101.237
+black.coffee.local has address 192.168.101.131
+creamer.coffee.local has address 192.168.101.71
+espresso.coffee.local has address 192.168.101.72
+iced-latte.coffee.local has address 192.168.101.50
+							  </code>
+							</pre>
+							
+							<br>
+							---------------------------
+							<br>
+							<h2>2. Scanning</h2>
+Netcat can be used as a port scanner. If you find yourself on a machine that is dual-homed you can use it to scan the second network.
+<pre>
+  <code>
+  nc -nvv -w 1 -z 192.168.90.87 21-443
+  </code>
+</pre>
+
+Same as above only this one is UDP scanning:<br>
+<pre>
+  <code>
+  nc -nv -u -w 1 -z 192.168.90.87 160-162
+  </code>
+</pre>							
+							<br>
+						</div>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<section>
+								<h2>Get in touch</h2>
+								<form method="post" action="#">
+									<div class="fields">
+										<div class="field half">
+											<input type="text" name="name" id="name" placeholder="Name" />
+										</div>
+										<div class="field half">
+											<input type="email" name="email" id="email" placeholder="Email" />
+										</div>
+										<div class="field">
+											<textarea name="message" id="message" placeholder="Message"></textarea>
+										</div>
+									</div>
+									<ul class="actions">
+										<li><input type="submit" value="Send" class="primary" /></li>
+									</ul>
+								</form>
+							</section>
+							<section>
+								<h2>Follow</h2>
+								<ul class="icons">
+									<li><a href="#" class="icon brands style2 fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-dribbble"><span class="label">Dribbble</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-500px"><span class="label">500px</span></a></li>
+									<li><a href="#" class="icon solid style2 fa-phone"><span class="label">Phone</span></a></li>
+									<li><a href="#" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+								</ul>
+							</section>
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

